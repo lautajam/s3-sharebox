@@ -1,14 +1,4 @@
--- Crear base de datos si no existe
-DO
-$$
-BEGIN
-   IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'gestor_s3') THEN
-      PERFORM pg_catalog.create_database('gestor_s3');
-   END IF;
-END
-$$;
-
--- Crear tablas
+-- Crear las tablas
 CREATE TABLE IF NOT EXISTS roles (
   role_id SERIAL PRIMARY KEY,
   role_name VARCHAR(255),
@@ -24,7 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
   password VARCHAR(255),
   role_id INT,
   created_at TIMESTAMP DEFAULT current_timestamp,
-  FOREIGN KEY (role_id) REFERENCES roles(role_id)  
+  FOREIGN KEY (role_id) REFERENCES roles(role_id)
 );
 
 CREATE TABLE IF NOT EXISTS tags (
@@ -37,7 +27,7 @@ CREATE TABLE IF NOT EXISTS folders (
   folder_id SERIAL PRIMARY KEY,
   folder_name VARCHAR(255),
   parent_folder_id INT,
-  FOREIGN KEY (parent_folder_id) REFERENCES folders(folder_id) 
+  FOREIGN KEY (parent_folder_id) REFERENCES folders(folder_id)
 );
 
 CREATE TABLE IF NOT EXISTS files (
@@ -47,7 +37,7 @@ CREATE TABLE IF NOT EXISTS files (
   file_type VARCHAR(255),
   folder_id INT,
   uploaded_at TIMESTAMP DEFAULT current_timestamp,
-  FOREIGN KEY (folder_id) REFERENCES folders(folder_id) 
+  FOREIGN KEY (folder_id) REFERENCES folders(folder_id)
 );
 
 CREATE TABLE IF NOT EXISTS file_tag (
@@ -55,14 +45,14 @@ CREATE TABLE IF NOT EXISTS file_tag (
   tag_id INT,
   PRIMARY KEY (file_id, tag_id),
   FOREIGN KEY (file_id) REFERENCES files(file_id),
-  FOREIGN KEY (tag_id) REFERENCES tags(tag_id) 
+  FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
 );
 
 CREATE TABLE IF NOT EXISTS folder_tag (
   folder_id INT,
   tag_id INT,
   PRIMARY KEY (folder_id, tag_id),
-  FOREIGN KEY (folder_id) REFERENCES folders(folder_id), 
+  FOREIGN KEY (folder_id) REFERENCES folders(folder_id),
   FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
 );
 
@@ -71,7 +61,7 @@ CREATE TABLE IF NOT EXISTS folder_role (
   role_id INT,
   access_level VARCHAR(255),
   PRIMARY KEY (folder_id, role_id),
-  FOREIGN KEY (folder_id) REFERENCES folders(folder_id), 
+  FOREIGN KEY (folder_id) REFERENCES folders(folder_id),
   FOREIGN KEY (role_id) REFERENCES roles(role_id)
 );
 
