@@ -47,6 +47,7 @@ services:
 
 volumes:
   postgres_data:
+    driver: local
 
 networks:
   s3-network:
