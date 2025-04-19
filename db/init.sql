@@ -1,0 +1,86 @@
+-- Crear base de datos si no existe
+DO
+$$
+BEGIN
+   IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'gestor_s3') THEN
+      PERFORM pg_catalog.create_database('gestor_s3');
+   END IF;
+END
+$$;
+
+-- Conectamos a la base de datos
+\c gestor_s3;
+
+CREATE TABLE IF NOT EXISTS role (
+  role_id SERIAL PRIMARY KEY,
+  role_name VARCHAR(255),
+  role_description TEXT,
+  can_create_files BOOLEAN,
+  can_create_folders BOOLEAN
+);
+
+CREATE TABLE IF NOT EXISTS users (
+  user_id SERIAL PRIMARY KEY,
+  full_name VARCHAR(255),
+  username VARCHAR(255),
+  role_id INT,
+  created_at TIMESTAMP DEFAULT current_timestamp,
+  FOREIGN KEY (role_id) REFERENCES role(role_id)
+);
+
+CREATE TABLE IF NOT EXISTS tag (
+  tag_id SERIAL PRIMARY KEY,
+  tag_name VARCHAR(255),
+  tag_description TEXT
+);
+
+CREATE TABLE IF NOT EXISTS folder (
+  folder_id SERIAL PRIMARY KEY,
+  folder_name VARCHAR(255),
+  parent_folder_id INT,
+  FOREIGN KEY (parent_folder_id) REFERENCES folder(folder_id)
+);
+
+CREATE TABLE IF NOT EXISTS files (
+  file_id SERIAL PRIMARY KEY,
+  file_name VARCHAR(255),
+  file_metadata JSONB,
+  file_type VARCHAR(255),
+  folder_id INT,
+  uploaded_at TIMESTAMP DEFAULT current_timestamp,
+  FOREIGN KEY (folder_id) REFERENCES folder(folder_id)
+);
+
+CREATE TABLE IF NOT EXISTS file_tag (
+  file_id INT,
+  tag_id INT,
+  PRIMARY KEY (file_id, tag_id),
+  FOREIGN KEY (file_id) REFERENCES files(file_id),
+  FOREIGN KEY (tag_id) REFERENCES tag(tag_id)
+);
+
+CREATE TABLE IF NOT EXISTS folder_tag (
+  folder_id INT,
+  tag_id INT,
+  PRIMARY KEY (folder_id, tag_id),
+  FOREIGN KEY (folder_id) REFERENCES folder(folder_id),
+  FOREIGN KEY (tag_id) REFERENCES tag(tag_id)
+);
+
+CREATE TABLE IF NOT EXISTS folder_role (
+  folder_id INT,
+  role_id INT,
+  access_level VARCHAR(255),
+  PRIMARY KEY (folder_id, role_id),
+  FOREIGN KEY (folder_id) REFERENCES folder(folder_id),
+  FOREIGN KEY (role_id) REFERENCES role(role_id)
+);
+
+CREATE TABLE IF NOT EXISTS file_role (
+  file_id INT,
+  role_id INT,
+  access_level VARCHAR(255),
+  PRIMARY KEY (file_id, role_id),
+  FOREIGN KEY (file_id) REFERENCES files(file_id),
+  FOREIGN KEY (role_id) REFERENCES role(role_id)
+);
