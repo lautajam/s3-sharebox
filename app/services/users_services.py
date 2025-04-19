@@ -75,11 +75,11 @@ def update_user(db: Session, user_id: int, user_update: UserUpdate):
     
     user = db.query(User).filter(User.user_id == user_id).first()
     if not user:
-        return None
+        return False
 
     for field, value in user_update.dict(exclude_unset=True).items():
         setattr(user, field, value)
 
     db.commit()
     db.refresh(user)
-    return user
+    return True

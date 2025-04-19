@@ -9,6 +9,9 @@ class UserCreate(BaseModel):
     username: str
     password: str
     role_id: int
+    
+    class Config:
+        from_attributes = True
 
 
 class UserUpdate(BaseModel):
@@ -25,4 +28,4 @@ class UserResponse(BaseModel):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
