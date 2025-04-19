@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, String, Boolean, JSON, DateTime
-from app.database import Base
+from database import Base
 from datetime import datetime, timezone
 
 class User(Base):
     __tablename__ = "users"
-    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, primary_key=True)
     full_name = Column(String)
     username = Column(String)
     password = Column(String)
@@ -13,7 +13,7 @@ class User(Base):
     
 class Role(Base):
     __tablename__ = "roles"
-    id = Column(Integer, primary_key=True)
+    role_id = Column(Integer, primary_key=True)
     role_name =  Column(String)
     role_description = Column(String)
     can_create_files = Column(Boolean)
@@ -21,13 +21,13 @@ class Role(Base):
 
 class Tag(Base):
     __tablename__ = "tags"
-    id = Column(Integer, primary_key=True)
+    tag_id = Column(Integer, primary_key=True)
     tag_name = Column(String)
     tag_description = Column(String)
     
 class Folder(Base):
     __tablename__ = "folders"
-    id = Column(Integer, primary_key=True)
+    folder_id = Column(Integer, primary_key=True)
     folder_name = Column(String)
     parent_folder_id = Column(Integer)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
