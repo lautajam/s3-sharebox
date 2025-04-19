@@ -8,9 +8,6 @@ BEGIN
 END
 $$;
 
--- Conectamos a la base de datos
-\c gestor_s3;
-
 CREATE TABLE IF NOT EXISTS role (
   role_id SERIAL PRIMARY KEY,
   role_name VARCHAR(255),
@@ -23,6 +20,7 @@ CREATE TABLE IF NOT EXISTS users (
   user_id SERIAL PRIMARY KEY,
   full_name VARCHAR(255),
   username VARCHAR(255),
+  password VARCHAR(255),
   role_id INT,
   created_at TIMESTAMP DEFAULT current_timestamp,
   FOREIGN KEY (role_id) REFERENCES role(role_id)
@@ -84,3 +82,13 @@ CREATE TABLE IF NOT EXISTS file_role (
   FOREIGN KEY (file_id) REFERENCES files(file_id),
   FOREIGN KEY (role_id) REFERENCES role(role_id)
 );
+
+INSERT INTO role (role_name, role_description, can_create_files, can_create_folders)
+VALUES
+('admin', 'Administrator role with full access', TRUE, TRUE),
+('user', 'Regular user role with limited access', TRUE, FALSE),
+('guest', 'Guest role with read-only access', FALSE, FALSE);
+
+INSERT INTO users (full_name, username, password, role_id)
+VALUES
+('Admin-User', 'superadmin', '1234', 1);
