@@ -43,23 +43,23 @@ class File(Base):
     uploaded_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
 class FileTag(Base):
-    __tablename__ = "file_tags"
+    __tablename__ = "file_tag"
     file_id = Column(Integer, primary_key=True)
     tag_id = Column(Integer, primary_key=True)
     
 class FolderTag(Base):
-    __tablename__ = "folder_tags"
+    __tablename__ = "folder_tag"
     folder_id = Column(Integer, primary_key=True)
     tag_id = Column(Integer, primary_key=True)
     
 class FolderRole(Base):
-    __tablename__ = "folder_roles"
+    __tablename__ = "folder_role"
     folder_id = Column(Integer, primary_key=True)
     role_id = Column(Integer, primary_key=True)
     access_level = Column(String)
     
 class FileRole(Base):
-    __tablename__ = "file_roles"
+    __tablename__ = "file_role"
     file_id = Column(Integer, primary_key=True)
     role_id = Column(Integer, primary_key=True)
     access_level = Column(String)
