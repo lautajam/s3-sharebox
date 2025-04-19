@@ -9,7 +9,7 @@ END
 $$;
 
 -- Crear de bases de datos
-CREATE TABLE IF NOT EXISTS role (
+CREATE TABLE IF NOT EXISTS roles (
   role_id SERIAL PRIMARY KEY,
   role_name VARCHAR(255),
   role_description TEXT,
@@ -27,13 +27,13 @@ CREATE TABLE IF NOT EXISTS users (
   FOREIGN KEY (role_id) REFERENCES role(role_id)
 );
 
-CREATE TABLE IF NOT EXISTS tag (
+CREATE TABLE IF NOT EXISTS tags (
   tag_id SERIAL PRIMARY KEY,
   tag_name VARCHAR(255),
   tag_description TEXT
 );
 
-CREATE TABLE IF NOT EXISTS folder (
+CREATE TABLE IF NOT EXISTS folders (
   folder_id SERIAL PRIMARY KEY,
   folder_name VARCHAR(255),
   parent_folder_id INT,
