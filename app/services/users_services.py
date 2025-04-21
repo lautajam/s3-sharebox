@@ -30,6 +30,34 @@ def get_user_by_id(db: Session, user_id: int):
     return db.query(User).filter(User.user_id == user_id).first()
 
 
+def get_user_by_username(db: Session, username: str):
+    """Get a user by username from the database.
+
+    Args:
+        db (Session): SQLAlchemy session object
+        username (str): Username of the user to retrieve
+
+    Returns:
+        User: User object if found, None otherwise
+    """
+
+    return db.query(User).filter(User.username == username).first()
+
+
+def get_user_by_password(db: Session, password: str):
+    """Get a user by password from the database.
+
+    Args:
+        db (Session): SQLAlchemy session object
+        password (str): Password of the user to retrieve
+
+    Returns:
+        User: User object if found, None otherwise
+    """
+
+    return db.query(User).filter(User.password == password).all()
+
+
 def create_user(db: Session, user_data: UserCreate):
     """Create a new user in the database.
 
