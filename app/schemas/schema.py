@@ -9,7 +9,7 @@ class UserCreate(BaseModel):
     username: str
     password: str
     role_id: int
-    
+
     class Config:
         from_attributes = True
 
@@ -19,6 +19,7 @@ class UserUpdate(BaseModel):
     username: Optional[str] = None
     password: Optional[str] = None
     role_id: Optional[int] = None
+
 
 class UserResponse(BaseModel):
     user_id: int

@@ -29,8 +29,8 @@ def get_all_users(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Error obtaining users. {str(e)}")
 
 
-@router.get("/get-user/{user_id}", response_model=UserResponse)
-def get_all_users(user_id: int, db: Session = Depends(get_db)):
+@router.get("/get-user-id/{user_id}", response_model=UserResponse)
+def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
     """Get a user by ID from the database.
 
     Args:
@@ -48,6 +48,52 @@ def get_all_users(user_id: int, db: Session = Depends(get_db)):
         if not user:
             raise HTTPException(status_code=404, detail=f"Not found user")
         return user
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error obtaining users. {str(e)}")
+
+
+@router.get("/get-user-username/{username}", response_model=UserResponse)
+def get_user_by_username(username: str, db: Session = Depends(get_db)):
+    """Get a user by username from the database.
+
+    Args:
+        username (str): Username of the user to retrieve
+        db (Session): SQLAlchemy session object
+
+    Returns:
+        User: User object if found, None otherwise
+
+    Raises:
+        HTTPException: If the user is not found or if there is an error during the retrieval.
+    """
+    try:
+        user = users_services.get_user_by_username(db, username)
+        if not user:
+            raise HTTPException(status_code=404, detail=f"Not found user")
+        return user
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error obtaining users. {str(e)}")
+
+
+@router.get("/get-user-password/{password}", response_model=List[UserResponse])
+def get_user_by_password(password: str, db: Session = Depends(get_db)):
+    """Get a user by password from the database.
+
+    Args:
+        password (str): Password of the user to retrieve
+        db (Session): SQLAlchemy session object
+
+    Returns:
+        User: User object if found, None otherwise
+
+    Raises:
+        HTTPException: If the user is not found or if there is an error during the retrieval.
+    """
+    try:
+        users = users_services.get_user_by_password(db, password)
+        if not users:
+            raise HTTPException(status_code=404, detail=f"Not found user")
+        return users
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error obtaining users. {str(e)}")
 
@@ -91,6 +137,10 @@ def create_user(new_user: UserCreate, db: Session = Depends(get_db)):
         HTTPException: If there is an error during the creation.
     """
     try:
+        if users_services.get_user_by_username(db, new_user.username):
+            return JSONResponse(
+                status_code=409, content={"message": "Username already in use"}
+            )
         users_services.create_user(db, new_user)
         return JSONResponse(
             status_code=201, content={"message": "User created successfully"}

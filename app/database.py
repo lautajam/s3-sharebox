@@ -14,7 +14,8 @@ Base = declarative_base()
 # Crea la sesión para interactuar con la base de datos
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-#Dependecia
+
+# Dependecia
 def get_db():
     db = SessionLocal()
     try:
