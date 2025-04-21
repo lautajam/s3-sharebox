@@ -98,6 +98,30 @@ def get_user_by_password(password: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Error obtaining users. {str(e)}")
 
 
+@router.get("/get-user-password-username/{username}/{password}", response_model=UserResponse)
+def get_user_by_password_username(username: str, password: str, db: Session = Depends(get_db)):
+    """Get a user by password and username from the database.
+    
+    Args:
+        password (str): Password of the user to retrieve
+        username (str): Username of the user to retrieve
+        db (Session): SQLAlchemy session object
+        
+    Returns:
+        User: User object if found, None otherwise
+    Raises:
+        HTTPException: If the user is not found or if there is an error during the retrieval.
+    """
+
+    try:
+        user = users_services.get_user_by_password_username(db, username, password)
+        if not user:
+            raise HTTPException(status_code=404, detail=f"Not found user")
+        return user
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error obtaining users. {str(e)}")
+
+
 @router.delete("/delete-user/{user_id}")
 def delete_user_by_id(user_id: int, db: Session = Depends(get_db)):
     """Delete a user by ID from the database.

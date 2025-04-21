@@ -58,6 +58,21 @@ def get_user_by_password(db: Session, password: str):
     return db.query(User).filter(User.password == password).all()
 
 
+def get_user_by_password_username(db: Session,  username:str, password: str):
+    """Get a user by password and username from the database.
+    
+    Args:
+        db (Session): SQLAlchemy session object
+        password (str): Password of the user to retrieve
+        username (str): Username of the user to retrieve
+        
+    Returns:
+        User: User object if found, None otherwise
+    """
+
+    return db.query(User).filter(User.password == password, User.username == username).first()
+
+
 def create_user(db: Session, user_data: UserCreate):
     """Create a new user in the database.
 
