@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from models.model import User
 from schemas.schema import UserCreate, UserUpdate
-
+from utils.password_hasher import hash_password, verify_password
 
 def get_all_users(db: Session):
     """Get all users from the database.
@@ -54,8 +54,10 @@ def get_user_by_password(db: Session, password: str):
     Returns:
         User: User object if found, None otherwise
     """
+    
+    password_hashed = hash_password(password)
 
-    return db.query(User).filter(User.password == password).all()
+    return db.query(User).filter(User.password == password_hashed).all()
 
 
 def get_user_by_password_username(db: Session,  username:str, password: str):
@@ -70,7 +72,12 @@ def get_user_by_password_username(db: Session,  username:str, password: str):
         User: User object if found, None otherwise
     """
 
-    return db.query(User).filter(User.password == password, User.username == username).first()
+    user = db.query(User).filter(User.username == username).first()
+    
+    if user and verify_password(password, user.password):
+        return user
+    
+    return None
 
 
 def create_user(db: Session, user_data: UserCreate):
@@ -85,6 +92,8 @@ def create_user(db: Session, user_data: UserCreate):
     """
 
     new_user = User(**user_data.dict())
+    new_user.password = hash_password(user_data.password)
+    
     db.add(new_user)
     db.commit()
     db.refresh(new_user)

@@ -19,3 +19,18 @@ def hash_password(password: str, cost: int = 12) -> str:
     salt = bcrypt.gensalt(rounds=cost)
     hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt)
     return hashed_password.decode("utf-8")
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verifies a plain password against a hashed password.
+    
+    Args:
+        plain_password (str): The plain password to verify.
+        hashed_password (str): The hashed password to compare against.
+    
+    Returns:
+        bool: True if the passwords match, False otherwise.
+        
+    Raises:
+        ValueError: If the plain password or hashed password is empty.
+    """
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
