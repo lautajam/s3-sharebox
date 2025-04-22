@@ -83,4 +83,4 @@ VALUES
 
 INSERT INTO users (full_name, username, password, role_id)
 VALUES
-('Admin-User', 'superadmin', '1234', 1);
+('Admin-User', 'superadmin', '$2b$12$sVeMF86j.ppCWTN4iaEshOtW6j46UjVF91sijXyHZIuNx2kxTK.Te', 1);
