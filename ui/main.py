@@ -11,7 +11,6 @@ def login_page():
         with st.form(key='login_form'):
             username = st.text_input("Username", type="default")
             password = st.text_input("Password", type="password")
-            #password = hash_password(st.text_input("Password", type="password"))
             submit_button = st.form_submit_button(label='Login')
 
             if submit_button:  
@@ -31,7 +30,7 @@ def login_page():
             name = st.text_input("Name", type="default")
             user = st.text_input("User", type="default")
             email = st.text_input("Email", type="default")
-            password = hash_password(st.text_input("Password", type="password"))
+            password = st.text_input("Password", type="password")
             submit_button = st.form_submit_button(label='Register')
 
             if submit_button:

@@ -3,21 +3,6 @@ from api.endpoints import USER_ENDPOINTS
 import requests
 import os
 
-def hash_password(password: str) -> str:
-    """ Hashes a password using bcrypt.
-    
-    Args:
-        password (str): The password to hash.
-        
-    Returns:
-        str: The hashed password.
-    """
-    salt = bcrypt.gensalt()
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-    
-    return hashed_password.decode('utf-8')
-
-
 def verify_user(password: str, username: str):
     try:
         list_response_users_password = requests.get(USER_ENDPOINTS['get_user_by_password'](password))
