@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   app:
     build:
@@ -15,6 +13,7 @@ services:
       - ./app:/app
     networks:
       - s3-network
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
   ui:
     build:
@@ -26,6 +25,7 @@ services:
       - .env
     volumes:
       - ./ui:/app
+    restart: always
     networks:
       - s3-network
 
@@ -39,6 +39,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     networks:
