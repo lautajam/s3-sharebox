@@ -1,8 +1,6 @@
 from api.endpoints import USER_ENDPOINTS
+from tools.constants import DEFAULT_ROLE
 import requests
-
-DEFAULT_ROLE = 2
-
 
 def verify_user(username: str, password: str):
     """Verify if the user exists in the database and if the password is correct.
@@ -67,3 +65,36 @@ def create_user(full_name: str, username: str, password: str):
         return -1
     except Exception as e:
         return -1
+
+def get_user_to_add_session(username: str) -> dict | None:
+    """Get user data by username.
+    
+    Args:
+        username (str): The username of the user.
+        
+    Returns:
+        dict: A dictionary containing the user's full name, username, and role.
+              Returns None if the user is not found or an error occurs.
+              
+    Raises:
+        Exception: If an error occurs during the request.
+    """
+    try:
+        response = requests.get(USER_ENDPOINTS["get_user_by_username"](username))
+
+        if response.status_code != 200:
+            return None
+
+        user_data_raw = response.json()
+
+        if user_data_raw.get("username") != username:
+            return None
+
+        return {
+            "full_name": user_data_raw["full_name"],
+            "username": user_data_raw["username"],
+            "role": user_data_raw["role_id"]
+        }
+
+    except:
+        return {"error": -1}
