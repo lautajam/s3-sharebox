@@ -2,8 +2,8 @@ import streamlit as st
 
 
 def init_session():
-    """
-    DOCSTRING
+    """ This function initializes the session state for the Streamlit app.
+    It checks if the session state has the key 'authenticated_user', and if not,
     """
     if "authenticated_user" not in st.session_state:
         st.session_state.authenticated_user = False
@@ -11,8 +11,13 @@ def init_session():
 
 
 def add_user_to_session(user_data: dict):
-    """
-    DOCSTRING
+    """ This function adds user data to the session state.
+    It sets the 'authenticated_user' key to True and stores the user's name,
+    username, and role in the 'user_data' key of the session state.
+    
+    Args:
+        user_data (dict): A dictionary containing user data. It should contain
+                          the keys 'full_name', 'username', and 'role'.
     """
     st.session_state.authenticated_user = True
     st.session_state.user_data = {
@@ -23,21 +28,18 @@ def add_user_to_session(user_data: dict):
 
 
 def close_session():
-    """
-    DOCSTRING
+    """ This function closes the session.
     """
     st.session_state.authenticated_user = False
     st.session_state.user_data = {}
     
 def is_authenticated():
-    """
-    DOCSTRING
+    """ This function checks if the user is authenticated.
     """
     return st.session_state.get("authenticated_user", False)
 
 
 def get_user_data():
-    """
-    DOCSTRING
+    """ This function retrieves the user data from the session state.
     """
     return st.session_state.get("user_data", {})
