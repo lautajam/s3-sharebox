@@ -28,8 +28,7 @@ def close_session():
     """
     st.session_state.authenticated_user = False
     st.session_state.user_data = {}
-
-
+    
 def is_authenticated():
     """
     DOCSTRING
