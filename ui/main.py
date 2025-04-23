@@ -1,5 +1,6 @@
 import streamlit as st
-from tools.login import verify_user
+from tools.login import verify_user, create_user
+import time
 
 
 def login_page():
@@ -34,14 +35,27 @@ def login_page():
 
     with tab_register:
         with st.form(key="register_form"):
-            name = st.text_input("Name", type="default")
-            user = st.text_input("User", type="default")
-            email = st.text_input("Email", type="default")
+            full_name = st.text_input("Name", type="default")
+            username = st.text_input("User", type="default")
             password = st.text_input("Password", type="password")
             submit_button = st.form_submit_button(label="Register")
 
             if submit_button:
-                st.success("Registration successful!")
+                
+                verify_user_bool = create_user(full_name, username, password)
+                
+                if verify_user_bool == -1:
+                    st.error(
+                        "Error al crear usuario, recargue y vuelva a intentarlo",
+                        icon="❌",
+                    )
+                elif verify_user_bool == 0:
+                    st.warning(
+                        "Username ya en uso, elija otro", icon="⚠️"
+                    )
+                else:
+                    st.success("Registration successful!")
+                    
 
 
 def main():
