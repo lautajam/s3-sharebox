@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS files (
   file_name VARCHAR(255),
   file_metadata JSONB,
   file_type VARCHAR(255),
+  s3_url VARCHAR(255),
   folder_id INT,
   uploaded_at TIMESTAMP DEFAULT current_timestamp,
   FOREIGN KEY (folder_id) REFERENCES folders(folder_id)
