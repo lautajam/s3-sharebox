@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from models.model import User
-from schemas.schema import UserCreate, UserUpdate
+from app.schemas.user_schema import UserCreate, UserUpdate
 from utils.password_hasher import hash_password, verify_password
 
 def get_all_users(db: Session):
