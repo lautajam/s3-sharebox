@@ -139,7 +139,7 @@ def delete_user_by_id(user_id: int, db: Session = Depends(get_db)):
     try:
         users_services.delete_user_by_id(db, user_id)
         return JSONResponse(
-            status_code=204,
+            status_code=200,
             content={"message": f"User #{user_id} deleted successfully"},
         )
     except Exception as e:

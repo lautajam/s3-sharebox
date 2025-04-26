@@ -47,7 +47,7 @@ async def upload_file(
 
         try:
             file_data = FileCreate(**data_to_save_db)
-            files_services.create_file_at_db(db, file_data)
+            files_services.create_file_to_db(db, file_data)
         except Exception as e:
             raise HTTPException(
                 status_code=500, detail="Failed to register file in database. " + str(e)
@@ -75,15 +75,18 @@ async def upload_file(
 
 @router.delete("/delete-file-from-db/{file_id}")
 def delete_file_fom_db(file_id: int, db: Session = Depends(get_db)):
-    """_summary_
+    """This function is used to delete a file from the database.
+    
     Args:
-
-
+        file_id (int): The ID of the file to be deleted.
+        db (Session): SQLAlchemy session object.
+        
     Returns:
-
-
+        JSONResponse: A response indicating success or failure.
+        
     Raises:
-
+        HTTPException: If there is an error during the deletion.
+        HTTPException: If the file is not found in the database.
     """
 
     try:
@@ -97,9 +100,35 @@ def delete_file_fom_db(file_id: int, db: Session = Depends(get_db)):
             )
 
         return JSONResponse(
-            status_code=204,
+            status_code=200,
             content={"message": f"flag[1]"},
         )
 
     except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error deleting file. {str(e)}")
+
+@router.delete("/delete-file-from-s3/{file_name}")
+def delete_file_fom_s3(file_name: str):
+    """
+
+    Args:
+        file_name (str): _description_
+        db (Session, optional): _description_. Defaults to Depends(get_db).
+    """
+    
+    try:
+        response = files_services.delete_file_from_s3(s3_bucket_name, file_name.strip())
+        
+        if response is None:
+            return JSONResponse(
+                status_code=500,
+                content={"message": "Error deleting file."},
+            )
+        
+        return JSONResponse(
+            status_code=200,
+            content={"message": "File deleted successfully"},
+        )
+        
+    except Exception as e: 
         raise HTTPException(status_code=500, detail=f"Error deleting file. {str(e)}")

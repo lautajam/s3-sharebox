@@ -1,9 +1,11 @@
 import os
 import boto3
-from models.model import File
+from typing import Tuple
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
-from typing import Tuple
+from botocore.exceptions import NoCredentialsError, PartialCredentialsError
+
+from models.model import File
 from schemas.file_schema import FileCreate, FileUpdate
 
 load_dotenv()
@@ -56,8 +58,8 @@ def create_file_to_db(db: Session, new_file_data: FileCreate):
     db.refresh(new_file)
     return new_file
 
+
 def delete_file_from_db(db: Session, file_id: int) -> Tuple[int, str]:
-    
     """Delete a file from the database.
 
     Args:
@@ -77,3 +79,17 @@ def delete_file_from_db(db: Session, file_id: int) -> Tuple[int, str]:
         return (1, "File deleted successfully")
     except Exception as e:
         return (-1, f"Error deleting file. {str(e)}")
+
+
+def delete_file_from_s3(s3_bucket_name: str, file_name: str) -> dict|str:
+    """
+    
+    """
+
+    s3 = boto3.client("s3")
+
+    try:
+        response = s3.delete_object(Bucket=s3_bucket_name, Key=file_name)
+        return response
+    except Exception as e:
+        return None
