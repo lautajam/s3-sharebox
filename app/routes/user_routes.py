@@ -98,15 +98,19 @@ def get_user_by_password(password: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Error obtaining users. {str(e)}")
 
 
-@router.get("/get-user-password-username/{username}/{password}", response_model=UserResponse)
-def get_user_by_password_username(username: str, password: str, db: Session = Depends(get_db)):
+@router.get(
+    "/get-user-password-username/{username}/{password}", response_model=UserResponse
+)
+def get_user_by_password_username(
+    username: str, password: str, db: Session = Depends(get_db)
+):
     """Get a user by password and username from the database.
-    
+
     Args:
         password (str): Password of the user to retrieve
         username (str): Username of the user to retrieve
         db (Session): SQLAlchemy session object
-        
+
     Returns:
         User: User object if found, None otherwise
     Raises:
