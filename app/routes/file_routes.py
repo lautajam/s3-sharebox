@@ -73,17 +73,51 @@ async def upload_file(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.delete("/delete-file/{file_id}/{file_name}")
+def delete_file(file_id: int, file_name: str, db: Session = Depends(get_db)):
+    """This function is used to delete a file from S3 and the database.
+
+    Args:
+        file_id (int): The ID of the file to be deleted.
+        file_name (str): The name of the file to be deleted.
+
+    Returns:
+        JSONResponse: A response indicating success or failure.
+
+    Raises:
+        HTTPException: If there is an error during the deletion.
+        HTTPException: If the file is not found in the database.
+    """
+    try:
+        
+        #Hay que hacer un chequeo de que el file_name sea del file_id
+        
+        # Eliminar de S3
+        delete_file_fom_s3(file_name)
+
+        # Eliminar de la base de datos
+        delete_file_fom_db(file_id, db)
+
+        return JSONResponse(
+            status_code=200,
+            content={"message": "File deleted successfully from S3 and database"},
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error deleting file: {str(e)}")
+
+
 @router.delete("/delete-file-from-db/{file_id}")
 def delete_file_fom_db(file_id: int, db: Session = Depends(get_db)):
     """This function is used to delete a file from the database.
-    
+
     Args:
         file_id (int): The ID of the file to be deleted.
         db (Session): SQLAlchemy session object.
-        
+
     Returns:
         JSONResponse: A response indicating success or failure.
-        
+
     Raises:
         HTTPException: If there is an error during the deletion.
         HTTPException: If the file is not found in the database.
@@ -95,9 +129,7 @@ def delete_file_fom_db(file_id: int, db: Session = Depends(get_db)):
         if flag[0] == 0:
             raise HTTPException(status_code=404, detail=f"{flag[1]}")
         elif flag[0] == -1:
-            raise HTTPException(
-                status_code=500, detail=f"{flag[1]}"
-            )
+            raise HTTPException(status_code=500, detail=f"{flag[1]}")
 
         return JSONResponse(
             status_code=200,
@@ -107,6 +139,7 @@ def delete_file_fom_db(file_id: int, db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error deleting file. {str(e)}")
 
+
 @router.delete("/delete-file-from-s3/{file_name}")
 def delete_file_fom_s3(file_name: str):
     """
@@ -115,20 +148,20 @@ def delete_file_fom_s3(file_name: str):
         file_name (str): _description_
         db (Session, optional): _description_. Defaults to Depends(get_db).
     """
-    
+
     try:
         response = files_services.delete_file_from_s3(s3_bucket_name, file_name.strip())
-        
+
         if response is None:
             return JSONResponse(
                 status_code=500,
                 content={"message": "Error deleting file."},
             )
-        
+
         return JSONResponse(
             status_code=200,
             content={"message": "File deleted successfully"},
         )
-        
-    except Exception as e: 
+
+    except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error deleting file. {str(e)}")
