@@ -8,12 +8,10 @@ from schemas.file_schema import FileCreate, FileUpdate
 load_dotenv()
 aws_access_key = os.getenv("AWS_ACCESS_KEY_ID")
 aws_secret_key = os.getenv("AWS_SECRET_ACCESS_KEY")
-aws_region = os.getenv("AWS_DEFAULT_REGION")
+aws_region = os.getenv("AWS_REGION")
 
-#def get_all_files_at_db(db: Session):
-#    return db.query(File).all()
 
-def upload_file_to_s3(file_path, bucket_name, s3_file_name) -> str:
+def upload_file_to_s3(file_path, bucket_name, s3_file_name) -> bool:
     """
     Upload a file to an S3 bucket with optional extra parameters.
 
@@ -31,23 +29,17 @@ def upload_file_to_s3(file_path, bucket_name, s3_file_name) -> str:
         aws_secret_access_key=aws_secret_key,
         region_name=aws_region,
     )
-    
-    print(f"Uploading {file_path} to bucket {bucket_name} as {s3_file_name}")
-    print(f"Key: {aws_access_key}")
-    print(f"Secret: {aws_secret_key}")
-    
+
     try:
         s3.upload_file(file_path, bucket_name, s3_file_name)
-            
-        s3_url = f"https://{bucket_name}.s3.amazonaws.com/{s3_file_name}"
-        return s3_url
+        return True
     except Exception as e:
-        return None
+        return False
 
-    
+
 def create_file_at_db(db: Session, new_file_data: FileCreate):
-    """ Create a new file in the database.
-    
+    """Create a new file in the database.
+
     Args:
         db (Session): SQLAlchemy session object
         new_file_data (FileCreate): File data to be created
@@ -55,7 +47,7 @@ def create_file_at_db(db: Session, new_file_data: FileCreate):
     Returns:
         File: Created File object
     """
-    
+
     new_file = File(**new_file_data.dict())
 
     db.add(new_file)

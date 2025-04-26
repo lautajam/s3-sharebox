@@ -1,5 +1,6 @@
 import os
 import json
+import urllib.parse
 from typing import List
 from database import get_db
 from dotenv import load_dotenv
@@ -9,6 +10,10 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 
 from services import files_services
 from schemas.file_schema import FileCreate, FileUpdate, FileResponse
+from utils.files_managment import (
+    save_file_temporarily,
+    get_data_to_save_at_db,
+)
 
 load_dotenv()
 s3_bucket_name = os.getenv("S3_BUCKET")
@@ -16,56 +21,53 @@ s3_bucket_name = os.getenv("S3_BUCKET")
 router = APIRouter()
 
 
-@router.get("/get-files", response_model=FileResponse)
-def get_all_users(db: Session = Depends(get_db)):
-    pass
-
-
 @router.post("/create-file", response_model=FileResponse)
-def upload_file(
+async def upload_file(
     uploaded_file: UploadFile = File(...),
-    new_file: str = Form(...),
+    folder_id: int = Form(1), # Hay que cambiar esto cuando se implementen las carpetas
     db: Session = Depends(get_db),
 ):
+    """This function is used to upload a file to S3 and register it in the database.
+
+    Args:
+        uploaded_file (UploadFile): The uploaded file.
+        db (Session): SQLAlchemy session object.
+
+    Returns:
+        JSONResponse: A response indicating success or failure.
+
+    Raises:
+        HTTPException: If there is an error during the upload or database operation.
+    """
     try:
-        # Guardar el archivo temporalmente
-        temp_file_path = f"/tmp/{uploaded_file.filename}"
-        with open(temp_file_path, "wb") as f:
-            f.write(uploaded_file.file.read())
 
-        new_file_dict = json.loads(new_file)
+        temp_file_path = save_file_temporarily(uploaded_file)
 
-        s3_url = files_services.upload_file_to_s3(
-            temp_file_path,
-            s3_bucket_name,
-            new_file_dict["file_name"],
-        )
-        
-        print(f"s3_url: {s3_url}")
+        data_to_save_db = await get_data_to_save_at_db(uploaded_file, folder_id)
 
-        if s3_url is not None:
-            file_data = FileCreate(**new_file_dict)
+        try:
+            file_data = FileCreate(**data_to_save_db)
             files_services.create_file_at_db(db, file_data)
-            return JSONResponse(
-                status_code=201,
-                content={"message": "File uploaded and registered successfully"},
+        except Exception as e:
+            raise HTTPException(
+                status_code=500, detail="Failed to register file in database. " + str(e)
             )
 
-        raise HTTPException(status_code=500, detail="Failed to upload file to S3.")
+        is_upload = files_services.upload_file_to_s3(
+            temp_file_path,
+            s3_bucket_name,
+            uploaded_file.filename,
+        )
+
+        if is_upload is not True:
+            # Hay que eliminarlo de la db
+            # files_services.delete_file_from_db(db, file_data.id)
+            raise HTTPException(status_code=500, detail="Failed to upload file to S3.")
+
+        return JSONResponse(
+            status_code=201,
+            content={"message": "File uploaded and registered successfully"},
+        )
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
-
-"""
-{
-    "file_name": "CV_Merino_Lautaro.pdf",
-    "file_metadata": {
-        "size": "66kb"
-    },
-    "file_type": "pdf",
-    "folder_id": 1,
-    "s3_url": "s3_url"
-}
-"""
