@@ -28,7 +28,7 @@ def create_s3_url(file_name: str) -> str:
     return f"https://{s3_bucket_name}.s3.{aws_region}.amazonaws.com/{encoded_file_name.replace(' ', '+')}"
 
 
-async def get_data_to_save_at_db(uploaded_file: UploadFile, folder_id: int) -> dict:
+async def prepare_data_for_db(uploaded_file: UploadFile, folder_id: int) -> dict:
     """This function is used to get data-file to db.
 
     Args:
