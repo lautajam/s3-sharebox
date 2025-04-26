@@ -21,10 +21,10 @@ s3_bucket_name = os.getenv("S3_BUCKET")
 router = APIRouter()
 
 
-@router.post("/create-file", response_model=FileResponse)
+@router.post("/upload-register-file", response_model=FileResponse)
 async def upload_file(
     uploaded_file: UploadFile = File(...),
-    folder_id: int = Form(1), # Hay que cambiar esto cuando se implementen las carpetas
+    folder_id: int = Form(1),  # Hay que cambiar esto cuando se implementen las carpetas
     db: Session = Depends(get_db),
 ):
     """This function is used to upload a file to S3 and register it in the database.
@@ -71,3 +71,35 @@ async def upload_file(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/delete-file-from-db/{file_id}")
+def delete_file_fom_db(file_id: int, db: Session = Depends(get_db)):
+    """_summary_
+    Args:
+
+
+    Returns:
+
+
+    Raises:
+
+    """
+
+    try:
+        flag = files_services.delete_file_from_db(db, file_id)
+
+        if flag[0] == 0:
+            raise HTTPException(status_code=404, detail=f"{flag[1]}")
+        elif flag[0] == -1:
+            raise HTTPException(
+                status_code=500, detail=f"{flag[1]}"
+            )
+
+        return JSONResponse(
+            status_code=204,
+            content={"message": f"flag[1]"},
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error deleting file. {str(e)}")

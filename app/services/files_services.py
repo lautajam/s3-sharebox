@@ -3,6 +3,7 @@ import boto3
 from models.model import File
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
+from typing import Tuple
 from schemas.file_schema import FileCreate, FileUpdate
 
 load_dotenv()
@@ -37,7 +38,7 @@ def upload_file_to_s3(file_path, bucket_name, s3_file_name) -> bool:
         return False
 
 
-def create_file_at_db(db: Session, new_file_data: FileCreate):
+def create_file_to_db(db: Session, new_file_data: FileCreate):
     """Create a new file in the database.
 
     Args:
@@ -54,3 +55,25 @@ def create_file_at_db(db: Session, new_file_data: FileCreate):
     db.commit()
     db.refresh(new_file)
     return new_file
+
+def delete_file_from_db(db: Session, file_id: int) -> Tuple[int, str]:
+    
+    """Delete a file from the database.
+
+    Args:
+        db (Session): SQLAlchemy session object
+        file_id (int): ID of the file to be deleted
+
+    Returns:
+        bool: True if deletion was successful, False otherwise
+    """
+    try:
+        file_to_delete = db.query(File).filter(File.file_id == file_id).first()
+        if not file_to_delete:
+            return (0, "File not found")
+
+        db.delete(file_to_delete)
+        db.commit()
+        return (1, "File deleted successfully")
+    except Exception as e:
+        return (-1, f"Error deleting file. {str(e)}")

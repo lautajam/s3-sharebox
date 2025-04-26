@@ -143,7 +143,7 @@ def delete_user_by_id(user_id: int, db: Session = Depends(get_db)):
             content={"message": f"User #{user_id} deleted successfully"},
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error deleting users. {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error deleting user. {str(e)}")
 
 
 @router.post("/create-user", response_model=UserResponse)
