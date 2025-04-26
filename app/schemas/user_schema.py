@@ -3,15 +3,11 @@ from typing import Optional
 from datetime import datetime
 
 
-# User schemas
 class UserCreate(BaseModel):
     full_name: str
     username: str
     password: str
     role_id: int
-
-    class Config:
-        from_attributes = True
 
 
 class UserUpdate(BaseModel):

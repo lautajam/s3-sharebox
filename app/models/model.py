@@ -44,9 +44,10 @@ class Folder(Base):
 
 class File(Base):
     __tablename__ = "files"
-    id = Column(Integer, primary_key=True)
+    file_id = Column(Integer, primary_key=True)
     file_name = Column(String)
     file_metadata = Column(JSON)
+    s3_url = Column(String)
     file_type = Column(String)
     folder_id = Column(Integer)
     uploaded_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from typing import List
 from database import get_db
-from app.schemas.user_schema import UserCreate, UserUpdate, UserResponse
+from schemas.user_schema import UserCreate, UserUpdate, UserResponse
 from services import users_services
 
 router = APIRouter()
@@ -139,11 +139,11 @@ def delete_user_by_id(user_id: int, db: Session = Depends(get_db)):
     try:
         users_services.delete_user_by_id(db, user_id)
         return JSONResponse(
-            status_code=204,
+            status_code=200,
             content={"message": f"User #{user_id} deleted successfully"},
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error deleting users. {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error deleting user. {str(e)}")
 
 
 @router.post("/create-user", response_model=UserResponse)
