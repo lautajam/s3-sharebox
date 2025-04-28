@@ -1,6 +1,6 @@
-﻿# 🗂️ s3_shrabocx
+﻿# 🗂️ S3-SHAREBOX
 
-**s3_shrabocx** es un sistema de gestión de archivos y carpetas basado en Amazon S3 e inspirado en Google Drive. Incluye control de acceso por roles, etiquetado, metadatos, interfaz web y backend modularizado en contenedores Docker.
+**s3-sharebox** es un sistema de gestión de archivos y carpetas basado en Amazon S3 e inspirado en Google Drive. Incluye control de acceso por roles, etiquetado, metadatos, interfaz web y backend modularizado en contenedores Docker.
 
 ## 🚀 Tecnologías utilizadas
 
