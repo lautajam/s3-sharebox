@@ -8,7 +8,6 @@
 - **Frontend:** Python 3 (Streamlit)
 - **Base de datos:** PostgreSQL 15
 - **Docker:** Docker & Docker Compose
-- **Amazon S3**
 
 ## ☁️ Servicios externos
 - **Almacenamiento de archivos:** Amazon S3
