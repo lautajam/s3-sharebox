@@ -21,6 +21,54 @@ s3_bucket_name = os.getenv("S3_BUCKET")
 
 router = APIRouter()
 
+@router.get("/get-files/", response_model=List[FileResponse])
+def get_all_files(db: Session = Depends(get_db)):
+    """Get all files from the database.
+    
+    Args:
+        db (Session): SQLAlchemy session object
+        
+    Returns:
+        List[File]: a list of File objects
+        
+    Raises:
+        HTTPException: If there is an error during the retrieval.
+    """
+    try:
+        all_files = files_services.get_all_files(db)
+        if not all_files:
+            raise HTTPException(status_code=404, detail="No files found")
+
+        return all_files
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"{str(e)}")
+
+@router.get("/get-files-user-id/{user_id}", response_model=List[FileResponse])
+def get_files_by_user_id(user_id: int, db: Session = Depends(get_db)):
+    """Get all files owned by a specific user.
+
+    Args:
+        user_id (int): ID of the user whose files to retrieve
+        db (Session): SQLAlchemy session object
+
+    Returns:
+        List[File]: List of File objects owned by the user
+
+    Raises:
+        HTTPException: If there is an error during the retrieval.
+    """
+    try:
+        user_files = files_services.get_files_by_user_id(db, user_id)
+
+        if not user_files:
+            raise HTTPException(status_code=404, detail="No files found for this user")
+
+        return user_files
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"{str(e)}")
+
 
 @router.get("/get-file-name/{file_name}", response_model=FileResponse)
 def get_file_by_name_in_db(file_name: str, db: Session = Depends(get_db)):
@@ -47,6 +95,7 @@ def get_file_by_name_in_db(file_name: str, db: Session = Depends(get_db)):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error retrieving file: {str(e)}")
+
 
 
 @router.post("/upload-register-file", response_model=FileResponse)
