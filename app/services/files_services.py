@@ -15,6 +15,29 @@ aws_region = os.getenv("AWS_REGION")
 
 ADMIN_ROLE_ID = 1
 
+def get_all_files(db: Session):
+    """Get all files from the database.
+    
+    Args:
+        db (Session): SQLAlchemy session object
+        
+    Returns:
+        List[File]: a list of File objects
+    """
+    return db.query(File).all()
+
+def get_files_by_user_id(db: Session, user_id: int) -> list[File]:
+    """Get all files owned by a specific user.
+    
+    Args:
+        db (Session): SQLAlchemy session object
+        user_id (int): ID of the user whose files to retrieve
+        
+    Returns:
+        List[File]: List of File objects owned by the user
+    """
+    return db.query(File).filter(File.owner_id == user_id).all()
+
 def get_file_by_name_in_s3(db: Session, file_name: str, aws_bucket_name: str) -> File:
     """Get a file from S3 bucket by its name.
     

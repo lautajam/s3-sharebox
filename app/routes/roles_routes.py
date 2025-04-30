@@ -11,22 +11,8 @@ from services import roles_service
 
 router = APIRouter()
 
-"""
-get_all_roles-----------
 
-get_role_by_id-----------
-
-get_role_by_name------------
-
-delete_role_by_id-----------
-
-create_role
-
-update_role
-"""
-
-
-@router.post("/get-roles", response_model=List[RoleResponse])
+@router.get("/get-roles", response_model=List[RoleResponse])
 def get_all_roles(db: Session = Depends(get_db)):
     """Get all roles from the database.
 
@@ -121,14 +107,14 @@ def delete_user_by_id(role_id: int, db: Session = Depends(get_db)):
 @router.post("/create-role", response_model=RoleResponse)
 def create_role(new_role: RoleCreate, db: Session = Depends(get_db)):
     """Create a new role in the database.
-    
+
     Args:
         new_role (RoleCreate): Role object to create
         db (Session): SQLAlchemy session object
-        
+
     Returns:
         JSONResponse: JSON response with a success message
-        
+
     Raises:
         HTTPException: If the role already exists or if there is an error during the creation.
     """
@@ -143,19 +129,20 @@ def create_role(new_role: RoleCreate, db: Session = Depends(get_db)):
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error creating role: {str(e)}")
-    
+
+
 @router.patch("/update-role/{role_id}", response_model=RoleResponse)
 def update_role(role_id: int, update_role: RoleUpdate, db: Session = Depends(get_db)):
     """Update a role in the database.
-    
+
     Args:
         role_id (int): ID of the role to update
         update_role (RoleUpdate): Role object with updated data
-        db (Session): SQLAlchemy session object 
-        
+        db (Session): SQLAlchemy session object
+
     Returns:
         Role: Updated Role object
-        
+
     Raises:
         HTTPException: If the role is not found or if there is an error during the update.
     """
