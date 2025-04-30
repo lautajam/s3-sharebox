@@ -142,4 +142,36 @@ def create_role(new_role: RoleCreate, db: Session = Depends(get_db)):
             status_code=201, content={"message": "User created successfully"}
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error creating users: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error creating role: {str(e)}")
+    
+@router.patch("/update-role/{role_id}", response_model=RoleResponse)
+def update_role(role_id: int, update_role: RoleUpdate, db: Session = Depends(get_db)):
+    """Update a role in the database.
+    
+    Args:
+        role_id (int): ID of the role to update
+        update_role (RoleUpdate): Role object with updated data
+        db (Session): SQLAlchemy session object 
+        
+    Returns:
+        Role: Updated Role object
+        
+    Raises:
+        HTTPException: If the role is not found or if there is an error during the update.
+    """
+    try:
+        role = roles_service.get_role_by_id(db, role_id)
+        if not role:
+            raise HTTPException(status_code=404, detail="Role not found")
+
+        exist_role = roles_service.update_role(db, role_id, update_role)
+
+        if exist_role:
+            role_update = roles_service.get_role_by_id(db, role_id)
+        else:
+            raise HTTPException(status_code=404, detail="Role not found")
+
+        return role_update
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error updating role. {str(e)}")
