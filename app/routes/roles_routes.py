@@ -18,9 +18,9 @@ get_role_by_id-----------
 
 get_role_by_name------------
 
-create_role
+delete_role_by_id-----------
 
-delete_role_by_id
+create_role
 
 update_role
 """
@@ -109,10 +109,37 @@ def delete_user_by_id(role_id: int, db: Session = Depends(get_db)):
         HTTPException: If the role is not found or if there is an error during the deletion.
     """
     try:
-        roles_service.delete_user_by_id(db, role_id)
+        roles_service.delete_role_by_id(db, role_id)
         return JSONResponse(
             status_code=200,
             content={"message": f"Roel #{role_id} deleted successfully"},
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error deleting role. {str(e)}")
+
+
+@router.post("/create-role", response_model=RoleResponse)
+def create_role(new_role: RoleCreate, db: Session = Depends(get_db)):
+    """Create a new role in the database.
+    
+    Args:
+        new_role (RoleCreate): Role object to create
+        db (Session): SQLAlchemy session object
+        
+    Returns:
+        JSONResponse: JSON response with a success message
+        
+    Raises:
+        HTTPException: If the role already exists or if there is an error during the creation.
+    """
+    try:
+        if roles_service.get_role_by_name(db, new_role.role_name):
+            return JSONResponse(
+                status_code=409, content={"message": "Role name already in use"}
+            )
+        roles_service.create_role(db, new_role)
+        return JSONResponse(
+            status_code=201, content={"message": "User created successfully"}
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error creating users: {str(e)}")
