@@ -50,6 +50,7 @@ class File(Base):
     s3_url = Column(String)
     file_type = Column(String)
     folder_id = Column(Integer)
+    owner_id = Column(Integer)
     uploaded_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 
