@@ -8,6 +8,7 @@ class FileCreate(BaseModel):
     file_metadata: dict[str, Any]
     file_type: str
     folder_id: int
+    owner_id: int
     s3_url: str
 
 
@@ -16,6 +17,7 @@ class FileUpdate(BaseModel):
     file_metadata: Optional[dict[str, Any]] = None
     file_type: Optional[str] = None
     folder_id: Optional[int] = None
+    owner_id: Optional[int] = None
     s3_url: Optional[str] = None
 
 
@@ -25,6 +27,7 @@ class FileResponse(BaseModel):
     file_metadata: dict[str, Any]
     file_type: str
     folder_id: int
+    owner_id: int
     s3_url: str
     uploaded_at: datetime
 

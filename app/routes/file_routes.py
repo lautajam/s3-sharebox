@@ -25,6 +25,7 @@ router = APIRouter()
 async def upload_and_register_file(
     uploaded_file: UploadFile = File(...),
     folder_id: int = Form(1),
+    owner_id: int = Form(1),
     db: Session = Depends(get_db),
 ):
     """ This function first registers the file in the database and then uploads the file to S3.
@@ -46,7 +47,7 @@ async def upload_and_register_file(
 
         # Primero registrar en DB
         await register_file_in_db(
-            uploaded_file=uploaded_file, folder_id=folder_id, db=db
+            uploaded_file=uploaded_file, folder_id=folder_id, owner_id=owner_id, db=db
         )
 
         return JSONResponse(
@@ -66,6 +67,7 @@ async def upload_and_register_file(
 async def register_file_in_db(
     uploaded_file: UploadFile = File(...),
     folder_id: int = Form(1),
+    owner_id: int = Form(1),
     db: Session = Depends(get_db),
 ):
     """ This function is used to register a file in the database.
@@ -73,6 +75,7 @@ async def register_file_in_db(
     Args:
         uploaded_file (UploadFile): The uploaded file.
         folder_id (int): The folder ID where the file is categorized.
+        owner_id (int): The ID of the owner of the file.
         db (Session): SQLAlchemy session object.
 
     Returns:
@@ -82,7 +85,7 @@ async def register_file_in_db(
         HTTPException: If there is an error during the registration.
     """
     try:
-        data_to_save_db = await prepare_data_for_db(uploaded_file, folder_id)
+        data_to_save_db = await prepare_data_for_db(uploaded_file, folder_id, owner_id)
 
         file_data = FileCreate(**data_to_save_db)
         files_services.create_file_to_db(db, file_data)

@@ -28,7 +28,7 @@ def create_s3_url(file_name: str) -> str:
     return f"https://{s3_bucket_name}.s3.{aws_region}.amazonaws.com/{encoded_file_name.replace(' ', '+')}"
 
 
-async def prepare_data_for_db(uploaded_file: UploadFile, folder_id: int) -> dict:
+async def prepare_data_for_db(uploaded_file: UploadFile, folder_id: int, owner_id: int) -> dict:
     """This function is used to get data-file to db.
 
     Args:
@@ -55,6 +55,7 @@ async def prepare_data_for_db(uploaded_file: UploadFile, folder_id: int) -> dict
             "file_metadata": file_metadata,
             "file_type": os.path.splitext(uploaded_file.filename)[1],
             "folder_id": folder_id,
+            "owner_id": owner_id,
             "s3_url": create_s3_url(uploaded_file.filename),
         }
 
