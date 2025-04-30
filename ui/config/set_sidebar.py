@@ -7,7 +7,6 @@ def show_sidebar():
     with st.sidebar:
         st.markdown("## Menú")
         st.button("Inicio")
-        st.button("Archivos")
         st.button("Configuración")
         if st.button("Cerrar sesión", on_click=close_session, key="close_session"):
             st.rerun()
