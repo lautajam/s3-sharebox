@@ -37,8 +37,10 @@ CREATE TABLE IF NOT EXISTS files (
   file_type VARCHAR(255),
   s3_url VARCHAR(255),
   folder_id INT,
+  owner_id INT,
   uploaded_at TIMESTAMP DEFAULT current_timestamp,
-  FOREIGN KEY (folder_id) REFERENCES folders(folder_id)
+  FOREIGN KEY (folder_id) REFERENCES folders(folder_id),
+  FOREIGN KEY (owner_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS file_tag (
