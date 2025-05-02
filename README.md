@@ -18,7 +18,7 @@
 
 Esto levanta tres servicios:
 
-- s3-db: Base de datos PostgreSQL
+- s3-db: Base de datos PostgreSQL 15
 - s3-app: Backend con FastAPI
 - s3-ui: Frontend con Streamlit
 
