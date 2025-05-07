@@ -26,6 +26,27 @@ def get_all_files(db: Session):
     """
     return db.query(File).all()
 
+def get_files_by_filter(db: Session, filter: str, order: str) -> list[File]:
+    """Get files from the database based on filter and order criteria.
+    
+    Args:
+        db (Session): SQLAlchemy session object
+        filter (str): Filter criteria for file retrieval
+        order (str): Order criteria for file retrieval
+        
+    Returns:
+        List[File]: List of File objects matching the filter and order criteria
+    """
+    if filter == "Nombre":
+        return db.query(File).order_by(File.file_name.asc()).all() if order == "Ascendente" else db.query(File).order_by(File.file_name.desc()).all()
+    elif filter == "Fecha":
+        return db.query(File).order_by(File.upload_date.asc()).all() if order == "Ascendente" else db.query(File).order_by(File.upload_date.desc()).all()
+    elif filter == "Tipo":
+        return db.query(File).order_by(File.file_size.asc()).all() if order == "Ascendente" else db.query(File).order_by(File.file_size.desc()).all()
+    elif filter == "Tamaño":
+        return db.query(File).order_by(File.file_type.asc()).all() if order == "Ascendente" else db.query(File).order_by(File.file_type.desc()).all()
+    
+
 def get_files_by_user_id(db: Session, user_id: int) -> list[File]:
     """Get all files owned by a specific user.
     
