@@ -25,3 +25,14 @@ def get_user_by_id(user_id):
     except requests.exceptions.RequestException as e:
         print(f"Error fetching user by ID: {e}")
         return None
+    
+def get_files_by_filter(filter, order):
+    """ This function retrieves files by filter and order from the API.
+    It sends a GET request to the API endpoint and returns the response.
+    """
+    try:
+        response = requests.get(FILES_ENDPOINTS["get_files_by_filter"], params={"select_filter": filter, "select_order": order})
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        return None

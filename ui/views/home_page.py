@@ -1,8 +1,10 @@
 import streamlit as st
 from tools.constants import ADMIN_ROLE
 from time import sleep
-from tools.file_managment import get_all_files, get_user_by_id
+from tools.file_managment import get_all_files, get_user_by_id, get_files_by_filter
+from tools.session_managment import files_session
 
+files_session()
 
 def home_page():
     st.markdown("## 📁 Gestor de Archivos")
@@ -36,6 +38,7 @@ def home_page():
             if select_filter == "---" or select_order == "---":
                 st.warning("Por favor, selecciona un filtro y un orden válidos.")
             else:
+                st.session_state.files = get_files_by_filter(select_filter, select_order)
                 st.success(f"Aplicando filtro: {select_filter} y orden: {select_order}")
                 sleep(2)
                 st.rerun()
@@ -43,8 +46,13 @@ def home_page():
     st.markdown("---")
 
     with st.container():
-
-        files = get_all_files()
+        
+        files = []
+        
+        if st.session_state.files is None:
+            files = get_all_files()
+        else:
+            files = st.session_state.files
 
         if files:
             for file in files:
@@ -52,9 +60,13 @@ def home_page():
                     col1, col2, col3 = st.columns([2, 2, 1])
 
                     with col1:
-                        st.markdown(f"**📁 Tipo:** {file.get('file_type', 'N/A')}")
-                        st.markdown(f"**🗓️ Fecha:** {file.get('uploaded_at', 'N/A')}")
-
+                        st.markdown(f"**📁 Tipo:** {(file.get('file_type', 'N/A')).replace('.', '')}")
+                        uploaded_at = file.get("uploaded_at")
+                        if uploaded_at:
+                           st.markdown(f"**🗓️ Fecha:** {uploaded_at.split('T')[0]} | {uploaded_at.split('T')[1].split('.')[0]}")
+                        else:
+                            st.markdown("**🗓️ Fecha:** N/A")
+                        
                     with col2:
                         user_info = (
                             get_user_by_id(file.get("owner_id"))

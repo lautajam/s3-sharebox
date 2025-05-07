@@ -43,3 +43,12 @@ def get_user_data():
     """ This function retrieves the user data from the session state.
     """
     return st.session_state.get("user_data", {})
+
+
+def files_session():
+    """ This function initializes the session state for files.
+    It checks if the session state has the key 'files', and if not,
+    it initializes it as an empty list.
+    """
+    if "files" not in st.session_state:
+        st.session_state.files = None

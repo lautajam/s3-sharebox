@@ -15,6 +15,7 @@ USER_ENDPOINTS = {
 
 FILES_ENDPOINTS = {
     "get_files": f"{BASE_URL}/files/get-files",
+    "get_files_by_filter": lambda select_filter, select_order: f"{BASE_URL}/files/get-files-filter/{select_filter}/{select_order}",
     "get_file_by_id": lambda file_id: f"{BASE_URL}/files/get-file-id/{file_id}",
     "get_file_by_name": lambda file_name: f"{BASE_URL}/files/get-file-name/{file_name}",
     "get_file_by_user_id": lambda user_id: f"{BASE_URL}/files/get-file-user-id/{user_id}",
