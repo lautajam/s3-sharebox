@@ -91,6 +91,7 @@ def get_user_to_add_session(username: str) -> dict | None:
             return None
 
         return {
+            "user_id": user_data_raw["user_id"],
             "full_name": user_data_raw["full_name"],
             "username": user_data_raw["username"],
             "role": user_data_raw["role_id"]

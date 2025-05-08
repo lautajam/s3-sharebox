@@ -2,14 +2,17 @@ import streamlit as st
 from tools.constants import ADMIN_ROLE
 from time import sleep
 from tools.file_managment import get_all_files, get_user_by_id, get_files_by_filter
-from tools.session_managment import files_session
 
-files_session()
+if "files" not in st.session_state:
+    st.session_state.files = None
 
 def home_page():
+    
     st.markdown("## 📁 Gestor de Archivos")
     st.markdown("---")
-
+    
+    #st.write(f"User data: {st.session_state.user_data}")
+    
     with st.container():
         col1, col2, col3 = st.columns([3, 3, 1])
         flag = False
@@ -29,9 +32,8 @@ def home_page():
             )
 
         with col3:
-            # Espaciado para alinear el botón con los selectbox
-            st.write("")  # línea vacía para separación
-            st.write("")  # otra línea vacía
+            st.write("")
+            st.write("")
             flag = st.button("Aplicar", use_container_width=True)
 
         if flag:
@@ -87,10 +89,11 @@ def home_page():
                             "⬇️ Descargar", key=file["file_id"], help="Descargar archivo"
                         )
                     with col2:
-                        st.button(
-                            "🗑️ Eliminar",
-                            key=f"delete_{file['file_id']}",
-                            help="Eliminar archivo",
-                        )
+                        if st.session_state.user_data["role"] == ADMIN_ROLE or file["owner_id"] == st.session_state.user_data["user_id"]:
+                            st.button(
+                                "🗑️ Eliminar",
+                                key=f"delete_{file['file_id']}",
+                                help="Eliminar archivo",
+                            )
 
     st.markdown("---")

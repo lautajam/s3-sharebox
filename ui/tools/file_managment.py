@@ -36,3 +36,22 @@ def get_files_by_filter(filter, order):
         return response.json()
     except requests.exceptions.RequestException as e:
         return None
+    
+def upload_file(file, user_id):
+    """
+    This function uploads a file to the API.
+    It sends a POST request to the API endpoint with the file data and metadata.
+    """
+    try:
+        files = {
+            'uploaded_file': file
+        }
+        data = {
+            'folder_id': 3,
+            'owner_id': user_id
+        }
+        response = requests.post(FILES_ENDPOINTS["upload_register_file"], files=files, data=data)
+        response.raise_for_status()
+        return 0
+    except requests.exceptions.RequestException as e:
+        return 1

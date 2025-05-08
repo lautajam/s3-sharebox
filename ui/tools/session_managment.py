@@ -21,6 +21,7 @@ def add_user_to_session(user_data: dict):
     """
     st.session_state.authenticated_user = True
     st.session_state.user_data = {
+        "user_id": user_data["user_id"],
         "name": user_data["full_name"] if " " not in user_data["full_name"] else user_data["full_name"].strip(" ")[0],
         "username": user_data["username"],
         "role": user_data["role"]
@@ -43,12 +44,3 @@ def get_user_data():
     """ This function retrieves the user data from the session state.
     """
     return st.session_state.get("user_data", {})
-
-
-def files_session():
-    """ This function initializes the session state for files.
-    It checks if the session state has the key 'files', and if not,
-    it initializes it as an empty list.
-    """
-    if "files" not in st.session_state:
-        st.session_state.files = None

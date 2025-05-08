@@ -19,7 +19,5 @@ FILES_ENDPOINTS = {
     "get_file_by_id": lambda file_id: f"{BASE_URL}/files/get-file-id/{file_id}",
     "get_file_by_name": lambda file_name: f"{BASE_URL}/files/get-file-name/{file_name}",
     "get_file_by_user_id": lambda user_id: f"{BASE_URL}/files/get-file-user-id/{user_id}",
-    "create_file": f"{BASE_URL}/files/create-file",
-    "update_file": lambda file_id: f"{BASE_URL}/files/update-file/{file_id}",
-    "delete_file": lambda file_id: f"{BASE_URL}/files/delete-file/{file_id}",
+    "upload_register_file": f"{BASE_URL}/files/upload-register-file/",
 }
