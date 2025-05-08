@@ -72,8 +72,6 @@ def login_page():
                         "role": DEFAULT_ROLE,
                     }
 
-                    add_user_to_session(user_data)
-
                     time.sleep(2)
 
                     st.rerun()
